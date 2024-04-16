@@ -1,18 +1,24 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+  <div>
+    <the-board :data="data"></the-board>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+import { defineComponent } from "vue";
+import TheBoard from '../components/TheBoard.vue';
+import { data } from '@/assets/data';
+import type { Data } from '../types';
 
 export default defineComponent({
-  name: 'HomeView',
+  name: "HomeView",
   components: {
-    HelloWorld,
+    TheBoard
+  },
+  data() {
+    return {
+      data: data as Data[] 
+    }
   },
 });
 </script>
