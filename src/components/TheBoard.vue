@@ -3,7 +3,7 @@
     <div class="container">
       <div class="board-wrapper">
         <div class="board-content">
-          <TheTable
+          <the-table
             v-for="(table, tableIndex) in dataList"
             :key="table.id"
             :status="table.status"
@@ -14,7 +14,7 @@
             :handleDragEnter="handleDragEnter"
             :taskStyles="getTaskStyles"
             :tableStyles="table.styles"
-          ></TheTable>
+          ></the-table>
         </div>
       </div>
     </div>
@@ -22,9 +22,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref, onMounted, onUnmounted, Ref } from "vue";
 import TheTable from "./TheTable.vue";
 import { Data, Task } from "../types";
+
+type Props = {
+  data: Data[];
+}
 
 export default defineComponent({
   name: "TheBoard",
@@ -37,28 +41,33 @@ export default defineComponent({
       required: true,
     },
   },
-  data() {
-    return {
-      dataList: this.data,
-      dragging: false,
-      draggedTask: null as {
-        tableIndex: number;
-        taskIndex: number;
-        sourceTableIndex: number;
-        sourceTaskIndex: number;
-        sourceTask: Task;
-        dragOffsetX: number;
-        dragOffsetY: number;
-      } | null,
-      draggedTaskNode: null as HTMLDivElement | null,
-      clonedTask: null as HTMLDivElement | null,
-    };
-  },
-  methods: {
-    handleDragStart(
+  setup(props: Props) {
+    const dataList: Ref<Data[]> = ref<Data[]>(props.data);
+    const dragging: Ref<boolean> = ref<boolean>(false);
+    let draggedTask: Ref<{
+      tableIndex: number;
+      taskIndex: number;
+      sourceTableIndex: number;
+      sourceTaskIndex: number;
+      sourceTask: Task;
+      dragOffsetX: number;
+      dragOffsetY: number;
+    } | null> = ref<{
+      tableIndex: number;
+      taskIndex: number;
+      sourceTableIndex: number;
+      sourceTaskIndex: number;
+      sourceTask: Task;
+      dragOffsetX: number;
+      dragOffsetY: number;
+    } | null>(null);
+    let draggedTaskNode: Ref<HTMLDivElement | null> = ref<HTMLDivElement | null>(null);
+    let clonedTask: Ref<HTMLDivElement | null> = ref<HTMLDivElement | null>(null);
+
+    const handleDragStart = (
       event: DragEvent,
       task: { tableIndex: number; taskIndex: number }
-    ) {
+    ) => {
       const offsetX =
         event.clientX -
         (event.target as HTMLElement).getBoundingClientRect().left;
@@ -66,59 +75,43 @@ export default defineComponent({
         event.clientY -
         (event.target as HTMLElement).getBoundingClientRect().top;
 
-      this.draggedTask = {
+      draggedTask.value = {
         tableIndex: task.tableIndex,
         taskIndex: task.taskIndex,
         sourceTableIndex: task.tableIndex,
         sourceTaskIndex: task.taskIndex,
-        sourceTask: this.dataList[task.tableIndex].tasks[task.taskIndex],
+        sourceTask: dataList.value[task.tableIndex].tasks[task.taskIndex],
         dragOffsetX: offsetX,
         dragOffsetY: offsetY,
       };
 
-      this.draggedTaskNode = event.target as HTMLDivElement;
+      draggedTaskNode.value = event.target as HTMLDivElement;
 
-      if (this.draggedTaskNode) {
-        this.draggedTaskNode.addEventListener("dragend", this.handleDragEnd);
+      if (draggedTaskNode.value) {
+        draggedTaskNode.value.addEventListener("dragend", handleDragEnd);
       }
 
-      // const clonedTaskDiv = this.draggedTaskNode.cloneNode(
-      //   true
-      // ) as HTMLDivElement;
-      // const rect = this.draggedTaskNode.getBoundingClientRect();
-      // clonedTaskDiv.style.position = "absolute";
-      // clonedTaskDiv.style.zIndex = "9999";
-      // clonedTaskDiv.style.width = rect.width + "px";
-      // clonedTaskDiv.style.height = rect.height + "px";
-      // clonedTaskDiv.style.pointerEvents = "none";
-      // clonedTaskDiv.style.top = `${
-      //   event.clientY - this.draggedTask.dragOffsetY
-      // }px`;
-      // clonedTaskDiv.style.left = `${
-      //   event.clientX - this.draggedTask.dragOffsetX
-      // }px`;
-      // document.body.appendChild(clonedTaskDiv);
-      // this.clonedTask = clonedTaskDiv;
+      dragging.value = true;
+    };
 
-      this.dragging = true;
-    },
-    handleDrag(event: DragEvent) {
-      if (!this.draggedTaskNode || !this.clonedTask) return;
-      this.clonedTask.style.top = `${
-        event.clientY - this.draggedTask!.dragOffsetY
+    const handleDrag = (event: DragEvent) => {
+      if (!draggedTaskNode.value || !clonedTask.value) return;
+      clonedTask.value.style.top = `${
+        event.clientY - draggedTask.value!.dragOffsetY
       }px`;
-      this.clonedTask.style.left = `${
-        event.clientX - this.draggedTask!.dragOffsetX
+      clonedTask.value.style.left = `${
+        event.clientX - draggedTask.value!.dragOffsetX
       }px`;
-    },
-    handleDragEnter(
+    };
+
+    const handleDragEnter = (
       event: DragEvent,
       task: { tableIndex: number; taskIndex: number }
-    ) {
-      const currentTask = this.draggedTask;
+    ) => {
+      const currentTask = draggedTask.value;
 
-      if (event.target !== this.draggedTaskNode) {
-        const newList = JSON.parse(JSON.stringify(this.dataList));
+      if (event.target !== draggedTaskNode.value) {
+        const newList = JSON.parse(JSON.stringify(dataList.value));
 
         newList[task.tableIndex].tasks.splice(
           task.taskIndex,
@@ -129,9 +122,9 @@ export default defineComponent({
           )[0]
         );
 
-        this.dataList = newList;
+        dataList.value = newList;
 
-        this.draggedTask = {
+        draggedTask.value = {
           sourceTableIndex: currentTask!.sourceTableIndex,
           sourceTaskIndex: currentTask!.sourceTaskIndex,
           tableIndex: task.tableIndex,
@@ -141,47 +134,46 @@ export default defineComponent({
           dragOffsetY: currentTask!.dragOffsetY,
         };
       }
-    },
-    handleDragEnd() {
-      this.dragging = false;
+    };
 
-      if (this.draggedTask) {
-        const dropTableIndex = this.draggedTask.tableIndex;
-        const dropTaskIndex = this.draggedTask.taskIndex;
-        const dropTable = this.dataList[dropTableIndex];
-        const sourceTableIndex = this.draggedTask.sourceTableIndex;
-        const sourceTaskIndex = this.draggedTask.sourceTaskIndex;
-        const sourceTable = this.dataList[sourceTableIndex];
-        const sourceTask = this.draggedTask.sourceTask;
+    const handleDragEnd = () => {
+      dragging.value = false;
+
+      if (draggedTask.value) {
+        const dropTableIndex = draggedTask.value.tableIndex;
+        const dropTaskIndex = draggedTask.value.taskIndex;
+        const dropTable = dataList.value[dropTableIndex];
+        const sourceTableIndex = draggedTask.value.sourceTableIndex;
+        const sourceTaskIndex = draggedTask.value.sourceTaskIndex;
+        const sourceTable = dataList.value[sourceTableIndex];
+        const sourceTask = draggedTask.value.sourceTask;
 
         if (
           dropTable.status === "TESTING" &&
           sourceTask.id % 2 !== 0 &&
           sourceTable.status !== "TESTING"
         ) {
-          const newList = JSON.parse(JSON.stringify(this.dataList));
+          const newList = JSON.parse(JSON.stringify(dataList.value));
           newList[sourceTableIndex].tasks.splice(
             sourceTaskIndex,
             0,
             newList[dropTableIndex].tasks.splice(dropTaskIndex, 1)[0]
           );
-          this.dataList = newList;
+          dataList.value = newList;
         }
       }
 
-      if (this.draggedTaskNode) {
-        this.draggedTaskNode.removeEventListener("dragend", this.handleDragEnd);
+      if (draggedTaskNode.value) {
+        draggedTaskNode.value.removeEventListener("dragend", handleDragEnd);
       }
-      // if (this.clonedTask) {
-      //   document.body.removeChild(this.clonedTask);
-      // }
 
-      this.draggedTask = null;
-      this.draggedTaskNode = null;
-      this.clonedTask = null;
-    },
-    getTaskStyles(task: { tableIndex: number; taskIndex: number }) {
-      const currentTask = this.draggedTask;
+      draggedTask.value = null;
+      draggedTaskNode.value = null;
+      clonedTask.value = null;
+    };
+
+    const getTaskStyles = (task: { tableIndex: number; taskIndex: number }) => {
+      const currentTask = draggedTask.value;
       if (
         currentTask &&
         currentTask.tableIndex === task.tableIndex &&
@@ -190,14 +182,24 @@ export default defineComponent({
         return "entered single-task";
       }
       return "single-task";
-    },
+    };
+
+    onMounted(() => {
+      document.body.addEventListener("drag", handleDrag);
+    });
+
+    onUnmounted(() => {
+      document.body.removeEventListener("drag", handleDrag);
+    });
+
+    return {
+      dataList,
+      dragging,
+      handleDragStart,
+      handleDragEnter,
+      getTaskStyles,
+    };
   },
-  // mounted() {
-  //   document.body.addEventListener("drag", this.handleDrag);
-  // },
-  // beforeUnmount() {
-  //   document.body.removeEventListener("drag", this.handleDrag);
-  // },
 });
 </script>
 
