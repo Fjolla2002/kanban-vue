@@ -40,8 +40,8 @@ export const data = [
     id: 4,
     status: "TESTING",
     tasks: [
-      { id: 1, title: "Testing 1", desc: "Testing 1 Description" },
       { id: 2, title: "Testing 2", desc: "Testing 2 Description" },
+      { id: 4, title: "Testing 4", desc: "Testing 4 Description" },
     ],
     styles: {
       background: "#132760",
