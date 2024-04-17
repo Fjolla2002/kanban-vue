@@ -3,8 +3,8 @@
     class="single-table"
     :style="{
       border: isDraggingOver
-        ? '5px solid #000'
-        : `2px solid ${tableStyles.background}`,
+        ? '5px solid #49505e'
+        : `3px solid ${tableStyles.background}`,
     }"
     @dragenter="dragging && !tasks.length ? handleDragEnter($event, { tableIndex, taskIndex: 0 }) : undefined"
     @dragover="handleDragOver"
