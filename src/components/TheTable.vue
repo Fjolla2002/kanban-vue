@@ -42,7 +42,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent } from "vue";
 import type { Status, Task, Styles } from "../types";
 import TheTask from "../components/TheTask.vue";
 
