@@ -136,7 +136,7 @@ export default defineComponent({
       if (
         targetElement &&
         targetElement.classList.contains("table-content") &&
-  
+        this.isDraggingOver &&
         this.dragging
       ) {
         
@@ -201,7 +201,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 5rem;
+  /* min-height: 5rem; */
 }
 
 .table-content .load-more {

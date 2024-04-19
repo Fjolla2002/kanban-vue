@@ -77,7 +77,7 @@ export default defineComponent({
 }
 
 .single-task:last-child {
-  margin-bottom: 1rem;
+  margin-bottom: 0;
 }
 
 .task-title {
