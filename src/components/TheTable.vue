@@ -73,21 +73,21 @@ export default defineComponent({
       required: true,
     },
     handleDragStart: {
-      type: Function as any as () => (
+      type: Function as unknown as () => (
         e: DragEvent,
         task: { tableIndex: number; taskIndex: number }
       ) => void,
       required: true,
     },
     handleDragEnter: {
-      type: Function as any as () => (
+      type: Function as unknown as () => (
         e: DragEvent,
         task: { tableIndex: number; taskIndex: number }
       ) => void,
       required: true,
     },
     taskStyles: {
-      type: Function as any as () => (task: {
+      type: Function as unknown as () => (task: {
         tableIndex: number;
         taskIndex: number;
       }) => string,

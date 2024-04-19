@@ -103,12 +103,12 @@ export default defineComponent({
       this.dragging = true;
     },
     handleDrag(event: DragEvent) {
-      if (!this.draggedTaskNode || !this.clonedTask) return;
+      if (!this.draggedTaskNode || !this.clonedTask || !this.draggedTask) return;
       this.clonedTask.style.top = `${
-        event.clientY - this.draggedTask!.dragOffsetY
+        event.clientY - this.draggedTask.dragOffsetY
       }px`;
       this.clonedTask.style.left = `${
-        event.clientX - this.draggedTask!.dragOffsetX
+        event.clientX - this.draggedTask.dragOffsetX
       }px`;
     },
     handleDragEnter(
@@ -131,15 +131,17 @@ export default defineComponent({
 
         this.dataList = newList;
 
-        this.draggedTask = {
-          sourceTableIndex: currentTask!.sourceTableIndex,
-          sourceTaskIndex: currentTask!.sourceTaskIndex,
-          tableIndex: task.tableIndex,
-          taskIndex: task.taskIndex,
-          sourceTask: currentTask!.sourceTask,
-          dragOffsetX: currentTask!.dragOffsetX,
-          dragOffsetY: currentTask!.dragOffsetY,
-        };
+        if (currentTask) {
+          this.draggedTask = {
+            sourceTableIndex: currentTask.sourceTableIndex,
+            sourceTaskIndex: currentTask.sourceTaskIndex,
+            tableIndex: task.tableIndex,
+            taskIndex: task.taskIndex,
+            sourceTask: currentTask.sourceTask,
+            dragOffsetX: currentTask.dragOffsetX,
+            dragOffsetY: currentTask.dragOffsetY,
+          };
+        }
       }
     },
     handleDragEnd() {

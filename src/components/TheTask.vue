@@ -35,15 +35,15 @@ export default defineComponent({
       required: true,
     },
     handleDragEnter: {
-      type: Function as any as () => (event: DragEvent, task: { tableIndex: number; taskIndex: number }) => void,
+      type: Function as unknown as () => (event: DragEvent, task: { tableIndex: number; taskIndex: number }) => void,
       required: true,
     },
     handleDragStart: {
-      type: Function as any as () => (event: DragEvent, task: { tableIndex: number; taskIndex: number }) => void,
+      type: Function as unknown as () => (event: DragEvent, task: { tableIndex: number; taskIndex: number }) => void,
       required: true,
     },
     taskStyles: {
-      type: Function as any as () => (task: { tableIndex: number; taskIndex: number }) => string,
+      type: Function as unknown as () => (task: { tableIndex: number; taskIndex: number }) => string,
       required: true,
     },
   },
