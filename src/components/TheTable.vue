@@ -6,7 +6,7 @@
         ? '5px solid #49505e'
         : `3px solid ${tableStyles.background}`,
     }"
-    @dragenter="dragging && !tasks.length ? handleDragEnter($event, { tableIndex, taskIndex: 0 }) : undefined"
+    @dragenter="isDraggingOver && dragging && !tasks.length ? handleDragEnter($event, { tableIndex, taskIndex: 0 }) : undefined"
     @dragover="handleDragOver"
     @dragleave="handleDragLeave"
     @drop="handleDrop"
@@ -17,7 +17,7 @@
     >
       <h2>{{ status }}</h2>
     </div>
-    <div class="table-content">
+    <div class="table-content" ref="tableContent">
       <the-task
         v-for="(task, taskIndex) in tasks.slice(0, getDisplayedTasksCount())"
         :key="taskIndex"
@@ -42,7 +42,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import type { Status, Task, Styles } from "../types";
 import TheTask from "../components/TheTask.vue";
 
@@ -93,6 +93,19 @@ export default defineComponent({
       }) => string,
       required: true,
     },
+    draggedTask: {
+      type: Object as () => {
+        tableIndex: number;
+        taskIndex: number;
+        sourceTableIndex: number;
+        sourceTaskIndex: number;
+        sourceTask: Task;
+        dragOffsetX: number;
+        dragOffsetY: number;
+      },
+      required: true,
+      default: () => ({}),
+    },
   },
   data() {
     return {
@@ -110,11 +123,44 @@ export default defineComponent({
     getDisplayedTasksCount(): number  {
       return this.displayedTasks[this.tableIndex] || 4;
     },
-    handleDragOver(e: DragEvent): void  {
+    isLoadMoreVisible(): boolean {
+      const tableContent = this.$refs.tableContent as HTMLDivElement;
+      const loadMoreButton = tableContent.querySelector(".load-more") as HTMLButtonElement;
+      return loadMoreButton !== null;
+    },
+    handleDragOver(e: DragEvent): void {
       e.preventDefault();
       this.isDraggingOver = true;
+      
+      const targetElement = e.target as HTMLDivElement;
+      if (
+        targetElement &&
+        targetElement.classList.contains("table-content") &&
+  
+        this.dragging
+      ) {
+        
+        const rect = targetElement.getBoundingClientRect();
+        const isAtEnd = e.clientY >= rect.bottom - 70;
+
+        if (
+          isAtEnd &&
+          this.draggedTask &&
+          this.draggedTask.sourceTableIndex !== this.tableIndex &&
+          this.tasks.length > 0 && !this.isLoadMoreVisible()
+        ) {
+          
+          this.handleDragEnter(e, {
+            tableIndex: this.tableIndex,
+            taskIndex: this.tasks.length - 1,
+          });
+        } else {
+          return;
+        }
+      }
     },
-    handleDragLeave(e: DragEvent): void  {
+
+    handleDragLeave(e: DragEvent): void {
       const relatedTarget = e.relatedTarget as HTMLDivElement;
       const tableElement = e.currentTarget as HTMLDivElement;
 

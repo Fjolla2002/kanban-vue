@@ -11,6 +11,7 @@
             :tableIndex="tableIndex"
             :dragging="dragging"
             :handleDragStart="handleDragStart"
+            :draggedTask="draggedTask"
             :handleDragEnter="handleDragEnter"
             :taskStyles="getTaskStyles"
             :tableStyles="table.styles"
@@ -41,7 +42,7 @@ export default defineComponent({
     return {
       dataList: this.data,
       dragging: false,
-      draggedTask: null as {
+      draggedTask: {} as {
         tableIndex: number;
         taskIndex: number;
         sourceTableIndex: number;
@@ -49,7 +50,7 @@ export default defineComponent({
         sourceTask: Task;
         dragOffsetX: number;
         dragOffsetY: number;
-      } | null,
+      },
       draggedTaskNode: null as HTMLDivElement | null,
       clonedTask: null as HTMLDivElement | null,
     };
@@ -103,7 +104,8 @@ export default defineComponent({
       this.dragging = true;
     },
     handleDrag(event: DragEvent) {
-      if (!this.draggedTaskNode || !this.clonedTask || !this.draggedTask) return;
+      if (!this.draggedTaskNode || !this.clonedTask || !this.draggedTask)
+        return;
       this.clonedTask.style.top = `${
         event.clientY - this.draggedTask.dragOffsetY
       }px`;
@@ -117,7 +119,7 @@ export default defineComponent({
     ) {
       const currentTask = this.draggedTask;
 
-      if (event.target !== this.draggedTaskNode) {
+      // if (event.target !== this.draggedTaskNode) {
         const newList = JSON.parse(JSON.stringify(this.dataList));
 
         newList[task.tableIndex].tasks.splice(
@@ -142,7 +144,7 @@ export default defineComponent({
             dragOffsetY: currentTask.dragOffsetY,
           };
         }
-      }
+      // }
     },
     handleDragEnd() {
       this.dragging = false;
@@ -178,8 +180,16 @@ export default defineComponent({
       //   document.body.removeChild(this.clonedTask);
       // }
 
-      this.draggedTask = null;
-      this.draggedTaskNode = null;
+      (this.draggedTask = {
+        tableIndex: 0,
+        taskIndex: 0,
+        sourceTableIndex: 0,
+        sourceTaskIndex: 0,
+        sourceTask: {} as Task,
+        dragOffsetX: 0,
+        dragOffsetY: 0,
+      }),
+        (this.draggedTaskNode = null);
       this.clonedTask = null;
     },
     getTaskStyles(task: { tableIndex: number; taskIndex: number }) {
