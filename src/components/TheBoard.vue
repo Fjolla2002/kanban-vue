@@ -119,7 +119,7 @@ export default defineComponent({
     ) {
       const currentTask = this.draggedTask;
 
-      // if (event.target !== this.draggedTaskNode) {
+      if (event.target !== this.draggedTaskNode) {
         const newList = JSON.parse(JSON.stringify(this.dataList));
 
         newList[task.tableIndex].tasks.splice(
@@ -144,7 +144,7 @@ export default defineComponent({
             dragOffsetY: currentTask.dragOffsetY,
           };
         }
-      // }
+      }
     },
     handleDragEnd() {
       this.dragging = false;

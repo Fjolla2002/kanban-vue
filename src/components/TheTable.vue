@@ -141,7 +141,7 @@ export default defineComponent({
       ) {
         
         const rect = targetElement.getBoundingClientRect();
-        const isAtEnd = e.clientY >= rect.bottom - 70;
+        const isAtEnd = e.clientY >= rect.height / 2;
 
         if (
           isAtEnd &&
