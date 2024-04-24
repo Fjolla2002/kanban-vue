@@ -6,7 +6,7 @@
         ? '5px solid #49505e'
         : `3px solid ${tableStyles.background}`,
     }"
-    @dragenter="isDraggingOver && dragging && !tasks.length ? handleDragEnter($event, { tableIndex, taskIndex: 0 }) : undefined"
+    @dragenter="dragging && !tasks.length ? handleDragEnter($event, { tableIndex, taskIndex: 0 }) : undefined"
     @dragover="handleDragOver"
     @dragleave="handleDragLeave"
     @drop="handleDrop"
@@ -15,7 +15,7 @@
       class="table-title"
       :style="{ backgroundColor: `${tableStyles.background}` }"
     >
-      <h2>{{ status }}</h2>
+      <h2>{{ status }} [{{ tasks.length }}]</h2>
     </div>
     <div class="table-content" ref="tableContent">
       <the-task
@@ -201,7 +201,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* min-height: 5rem; */
+  min-height: 40rem;
 }
 
 .table-content .load-more {
