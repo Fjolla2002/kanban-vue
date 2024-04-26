@@ -20,7 +20,11 @@ export const data = [
   {
     id: 2,
     status: "IN PROGRESS",
-    tasks: [],
+    tasks: [
+      { id: 1, title: "In progress 1", desc: "In progress 1 Description" },
+      { id: 2, title: "In progress 2", desc: "In progress 2 Description" },
+      { id: 3, title: "In progress 3", desc: "In progress 3 Description" },
+    ],
     styles: {
       background: "#9f950a",
     },
@@ -40,8 +44,8 @@ export const data = [
     id: 4,
     status: "TESTING",
     tasks: [
-      { id: 2, title: "Testing 2", desc: "Testing 2 Description" },
-      { id: 4, title: "Testing 4", desc: "Testing 4 Description" },
+      // { id: 2, title: "Testing 2", desc: "Testing 2 Description" },
+      // { id: 4, title: "Testing 4", desc: "Testing 4 Description" },
     ],
     styles: {
       background: "#132760",

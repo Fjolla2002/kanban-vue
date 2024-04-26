@@ -153,9 +153,7 @@ export default defineComponent({
             tableIndex: this.tableIndex,
             taskIndex: this.tasks.length - 1,
           });
-        } else {
-          return;
-        }
+        } 
       }
     },
 
