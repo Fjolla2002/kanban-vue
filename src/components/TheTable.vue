@@ -146,7 +146,6 @@ export default defineComponent({
         if (
           isAtEnd &&
           this.draggedTask &&
-          this.draggedTask.sourceTableIndex !== this.tableIndex &&
           this.tasks.length > 0 && !this.isLoadMoreVisible()
         ) {
           
