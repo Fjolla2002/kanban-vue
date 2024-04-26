@@ -40,7 +40,7 @@ export default defineComponent({
   },
   data() {
     return {
-      dataList: this.data,
+      dataList: this.loadDataListFromLocalStorage(),
       dragging: false,
       draggedTask: {} as {
         tableIndex: number;
@@ -56,6 +56,13 @@ export default defineComponent({
     };
   },
   methods: {
+    loadDataListFromLocalStorage() {
+      const savedDataList = localStorage.getItem("dataList");
+      return savedDataList ? JSON.parse(savedDataList) : this.data;
+    },
+    saveDataListToLocalStorage() {
+      localStorage.setItem("dataList", JSON.stringify(this.dataList));
+    },
     handleDragStart(
       event: DragEvent,
       task: { tableIndex: number; taskIndex: number }
@@ -172,6 +179,7 @@ export default defineComponent({
           this.dataList = newList;
         }
       }
+      this.saveDataListToLocalStorage();
 
       if (this.draggedTaskNode) {
         this.draggedTaskNode.removeEventListener("dragend", this.handleDragEnd);
@@ -204,9 +212,10 @@ export default defineComponent({
       return "single-task";
     },
   },
-  // mounted() {
-  //   document.body.addEventListener("drag", this.handleDrag);
-  // },
+  mounted() {
+    // document.body.addEventListener("drag", this.handleDrag);
+    this.saveDataListToLocalStorage()
+  },
   // beforeUnmount() {
   //   document.body.removeEventListener("drag", this.handleDrag);
   // },
