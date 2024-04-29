@@ -3,19 +3,19 @@
     <div class="container">
       <div class="board-wrapper">
         <div class="board-content">
-          <TheTable
-            v-for="(table, tableIndex) in dataList"
+          <the-table
+            v-for="(table, index) in datas"
             :key="table.id"
             :status="table.status"
             :tasks="table.tasks"
-            :tableIndex="tableIndex"
-            :dragging="dragging"
+            :tableIndex="index"
+            :dragging="isDragging"
             :handleDragStart="handleDragStart"
             :draggedTask="draggedTask"
             :handleDragEnter="handleDragEnter"
             :taskStyles="getTaskStyles"
             :tableStyles="table.styles"
-          ></TheTable>
+          ></the-table>
         </div>
       </div>
     </div>
@@ -25,7 +25,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import TheTable from "./TheTable.vue";
-import { Data, Task } from "../types";
+import { Data, Task } from "@/types";
 
 export default defineComponent({
   name: "TheBoard",
@@ -40,11 +40,11 @@ export default defineComponent({
   },
   data() {
     return {
-      dataList: this.loadDataListFromLocalStorage(),
-      dragging: false,
+      datas: this.loadDataFromLocalStorage(),
+      isDragging: false,
       draggedTask: {} as {
-        tableIndex: number;
-        taskIndex: number;
+        currentTableIndex: number;
+        currentTaskIndex: number;
         sourceTableIndex: number;
         sourceTaskIndex: number;
         sourceTask: Task;
@@ -56,16 +56,16 @@ export default defineComponent({
     };
   },
   methods: {
-    loadDataListFromLocalStorage() {
-      const savedDataList = localStorage.getItem("dataList");
-      return savedDataList ? JSON.parse(savedDataList) : this.data;
+    loadDataFromLocalStorage() {
+      const lsData = localStorage.getItem("data");
+      return lsData ? JSON.parse(lsData) : this.data;
     },
-    saveDataListToLocalStorage() {
-      localStorage.setItem("dataList", JSON.stringify(this.dataList));
+    saveDataToLocalStorage() {
+      localStorage.setItem("data", JSON.stringify(this.datas));
     },
     handleDragStart(
       event: DragEvent,
-      task: { tableIndex: number; taskIndex: number }
+      draggingTask: { tableIndex: number; taskIndex: number }
     ) {
       const offsetX =
         event.clientX -
@@ -75,11 +75,11 @@ export default defineComponent({
         (event.target as HTMLElement).getBoundingClientRect().top;
 
       this.draggedTask = {
-        tableIndex: task.tableIndex,
-        taskIndex: task.taskIndex,
-        sourceTableIndex: task.tableIndex,
-        sourceTaskIndex: task.taskIndex,
-        sourceTask: this.dataList[task.tableIndex].tasks[task.taskIndex],
+        currentTableIndex: draggingTask.tableIndex,
+        currentTaskIndex: draggingTask.taskIndex,
+        sourceTableIndex: draggingTask.tableIndex,
+        sourceTaskIndex: draggingTask.taskIndex,
+        sourceTask: this.datas[draggingTask.tableIndex].tasks[draggingTask.taskIndex],
         dragOffsetX: offsetX,
         dragOffsetY: offsetY,
       };
@@ -108,7 +108,7 @@ export default defineComponent({
       // document.body.appendChild(clonedTaskDiv);
       // this.clonedTask = clonedTaskDiv;
 
-      this.dragging = true;
+      this.isDragging = true;
     },
     handleDrag(event: DragEvent) {
       if (!this.draggedTaskNode || !this.clonedTask || !this.draggedTask)
@@ -122,47 +122,47 @@ export default defineComponent({
     },
     handleDragEnter(
       event: DragEvent,
-      task: { tableIndex: number; taskIndex: number }
+      enteredTask: { tableIndex: number; taskIndex: number }
     ) {
-      const currentTask = this.draggedTask;
+      const currentDraggingTask = this.draggedTask;
 
       if (event.target !== this.draggedTaskNode) {
-        const newList = JSON.parse(JSON.stringify(this.dataList));
+        const newDatas = JSON.parse(JSON.stringify(this.datas));
 
-        newList[task.tableIndex].tasks.splice(
-          task.taskIndex,
+        newDatas[enteredTask.tableIndex].tasks.splice(
+          enteredTask.taskIndex,
           0,
-          newList[currentTask!.tableIndex].tasks.splice(
-            currentTask!.taskIndex,
+          newDatas[currentDraggingTask!.currentTableIndex].tasks.splice(
+            currentDraggingTask!.currentTaskIndex,
             1
           )[0]
         );
 
-        this.dataList = newList;
+        this.datas = newDatas;
 
-        if (currentTask) {
+        if (currentDraggingTask) {
           this.draggedTask = {
-            sourceTableIndex: currentTask.sourceTableIndex,
-            sourceTaskIndex: currentTask.sourceTaskIndex,
-            tableIndex: task.tableIndex,
-            taskIndex: task.taskIndex,
-            sourceTask: currentTask.sourceTask,
-            dragOffsetX: currentTask.dragOffsetX,
-            dragOffsetY: currentTask.dragOffsetY,
+            sourceTableIndex: currentDraggingTask.sourceTableIndex,
+            sourceTaskIndex: currentDraggingTask.sourceTaskIndex,
+            currentTableIndex: enteredTask.tableIndex,
+            currentTaskIndex: enteredTask.taskIndex,
+            sourceTask: currentDraggingTask.sourceTask,
+            dragOffsetX: currentDraggingTask.dragOffsetX,
+            dragOffsetY: currentDraggingTask.dragOffsetY,
           };
         }
       }
     },
     handleDragEnd() {
-      this.dragging = false;
+      this.isDragging = false;
 
       if (this.draggedTask) {
-        const dropTableIndex = this.draggedTask.tableIndex;
-        const dropTaskIndex = this.draggedTask.taskIndex;
-        const dropTable = this.dataList[dropTableIndex];
+        const dropTableIndex = this.draggedTask.currentTableIndex;
+        const dropTaskIndex = this.draggedTask.currentTaskIndex;
+        const dropTable = this.datas[dropTableIndex];
         const sourceTableIndex = this.draggedTask.sourceTableIndex;
         const sourceTaskIndex = this.draggedTask.sourceTaskIndex;
-        const sourceTable = this.dataList[sourceTableIndex];
+        const sourceTable = this.datas[sourceTableIndex];
         const sourceTask = this.draggedTask.sourceTask;
 
         if (
@@ -170,27 +170,27 @@ export default defineComponent({
           sourceTask.id % 2 !== 0 &&
           sourceTable.status !== "TESTING"
         ) {
-          const newList = JSON.parse(JSON.stringify(this.dataList));
-          newList[sourceTableIndex].tasks.splice(
+          const newDatas = JSON.parse(JSON.stringify(this.datas));
+          newDatas[sourceTableIndex].tasks.splice(
             sourceTaskIndex,
             0,
-            newList[dropTableIndex].tasks.splice(dropTaskIndex, 1)[0]
+            newDatas[dropTableIndex].tasks.splice(dropTaskIndex, 1)[0]
           );
-          this.dataList = newList;
+          this.datas = newDatas;
         }
       }
-      this.saveDataListToLocalStorage();
+      this.saveDataToLocalStorage();
 
       if (this.draggedTaskNode) {
         this.draggedTaskNode.removeEventListener("dragend", this.handleDragEnd);
       }
-      // if (this.clonedTask) {
-      //   document.body.removeChild(this.clonedTask);
-      // }
+      if (this.clonedTask) {
+        document.body.removeChild(this.clonedTask);
+      }
 
       (this.draggedTask = {
-        tableIndex: 0,
-        taskIndex: 0,
+        currentTableIndex: 0,
+        currentTaskIndex: 0,
         sourceTableIndex: 0,
         sourceTaskIndex: 0,
         sourceTask: {} as Task,
@@ -204,8 +204,8 @@ export default defineComponent({
       const currentTask = this.draggedTask;
       if (
         currentTask &&
-        currentTask.tableIndex === task.tableIndex &&
-        currentTask.taskIndex === task.taskIndex
+        currentTask.currentTableIndex === task.tableIndex &&
+        currentTask.currentTaskIndex === task.taskIndex
       ) {
         return "entered single-task";
       }
@@ -214,7 +214,7 @@ export default defineComponent({
   },
   mounted() {
     // document.body.addEventListener("drag", this.handleDrag);
-    this.saveDataListToLocalStorage()
+    this.saveDataToLocalStorage()
   },
   // beforeUnmount() {
   //   document.body.removeEventListener("drag", this.handleDrag);

@@ -95,8 +95,8 @@ export default defineComponent({
     },
     draggedTask: {
       type: Object as () => {
-        tableIndex: number;
-        taskIndex: number;
+        currentTableIndex: number;
+        currentTaskIndex: number;
         sourceTableIndex: number;
         sourceTaskIndex: number;
         sourceTask: Task;
