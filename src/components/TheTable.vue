@@ -6,7 +6,11 @@
         ? '5px solid #49505e'
         : `3px solid ${tableStyles.background}`,
     }"
-    @dragenter="dragging && !tasks.length ? handleDragEnter($event, { tableIndex, taskIndex: 0 }) : undefined"
+    @dragenter="
+      dragging && !tasks.length
+        ? handleDragEnter($event, { tableIndex, taskIndex: 0 })
+        : undefined
+    "
     @dragover="handleDragOver"
     @dragleave="handleDragLeave"
     @drop="handleDrop"
@@ -120,18 +124,20 @@ export default defineComponent({
         [this.tableIndex]: (this.displayedTasks[this.tableIndex] || 4) + 2,
       };
     },
-    getDisplayedTasksCount(): number  {
+    getDisplayedTasksCount(): number {
       return this.displayedTasks[this.tableIndex] || 4;
     },
     isLoadMoreVisible(): boolean {
       const tableContent = this.$refs.tableContent as HTMLDivElement;
-      const loadMoreButton = tableContent.querySelector(".load-more") as HTMLButtonElement;
+      const loadMoreButton = tableContent.querySelector(
+        ".load-more"
+      ) as HTMLButtonElement;
       return loadMoreButton !== null;
     },
     handleDragOver(e: DragEvent): void {
       e.preventDefault();
       this.isDraggingOver = true;
-      
+
       const targetElement = e.target as HTMLDivElement;
       if (
         targetElement &&
@@ -139,21 +145,20 @@ export default defineComponent({
         this.isDraggingOver &&
         this.dragging
       ) {
-        
         const rect = targetElement.getBoundingClientRect();
         const isAtEnd = e.clientY >= rect.height / 2;
 
         if (
           isAtEnd &&
           this.draggedTask &&
-          this.tasks.length > 0 && !this.isLoadMoreVisible()
+          this.tasks.length > 0 &&
+          !this.isLoadMoreVisible()
         ) {
-          
           this.handleDragEnter(e, {
             tableIndex: this.tableIndex,
             taskIndex: this.tasks.length - 1,
           });
-        } 
+        }
       }
     },
 
@@ -167,7 +172,7 @@ export default defineComponent({
     },
     handleDrop(): void {
       this.isDraggingOver = false;
-    }
+    },
   },
 });
 </script>

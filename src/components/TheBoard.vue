@@ -79,7 +79,8 @@ export default defineComponent({
         currentTaskIndex: draggingTask.taskIndex,
         sourceTableIndex: draggingTask.tableIndex,
         sourceTaskIndex: draggingTask.taskIndex,
-        sourceTask: this.datas[draggingTask.tableIndex].tasks[draggingTask.taskIndex],
+        sourceTask:
+          this.datas[draggingTask.tableIndex].tasks[draggingTask.taskIndex],
         dragOffsetX: offsetX,
         dragOffsetY: offsetY,
       };
@@ -214,7 +215,7 @@ export default defineComponent({
   },
   mounted() {
     // document.body.addEventListener("drag", this.handleDrag);
-    this.saveDataToLocalStorage()
+    this.saveDataToLocalStorage();
   },
   // beforeUnmount() {
   //   document.body.removeEventListener("drag", this.handleDrag);

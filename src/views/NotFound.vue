@@ -19,10 +19,10 @@
 }
 
 .not-found-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 h1 {
@@ -32,19 +32,19 @@ h1 {
 }
 
 a {
-    margin-top: 2rem;
-    padding: 1rem 2rem;
-    background-color: #fff;
-    border: 2px solid #2db77c;
-    border-radius: 30px;
-    text-decoration: none;
-    color: #282c34;
-    transition: all 0.3s ease-in-out;
+  margin-top: 2rem;
+  padding: 1rem 2rem;
+  background-color: #fff;
+  border: 2px solid #2db77c;
+  border-radius: 30px;
+  text-decoration: none;
+  color: #282c34;
+  transition: all 0.3s ease-in-out;
 }
 
 a:hover {
-    border-color: #fff;
-    background-color: transparent;
-    color: #2db77c;
+  border-color: #fff;
+  background-color: transparent;
+  color: #2db77c;
 }
 </style>

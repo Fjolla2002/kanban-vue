@@ -35,30 +35,50 @@ export default defineComponent({
       required: true,
     },
     handleDragEnter: {
-      type: Function as unknown as () => (event: DragEvent, task: { tableIndex: number; taskIndex: number }) => void,
+      type: Function as unknown as () => (
+        event: DragEvent,
+        task: { tableIndex: number; taskIndex: number }
+      ) => void,
       required: true,
     },
     handleDragStart: {
-      type: Function as unknown as () => (event: DragEvent, task: { tableIndex: number; taskIndex: number }) => void,
+      type: Function as unknown as () => (
+        event: DragEvent,
+        task: { tableIndex: number; taskIndex: number }
+      ) => void,
       required: true,
     },
     taskStyles: {
-      type: Function as unknown as () => (task: { tableIndex: number; taskIndex: number }) => string,
+      type: Function as unknown as () => (task: {
+        tableIndex: number;
+        taskIndex: number;
+      }) => string,
       required: true,
     },
   },
   computed: {
     className(): string {
-      return this.dragging ? this.taskStyles({ tableIndex: this.tableIndex, taskIndex: this.taskIndex }) : 'single-task';
+      return this.dragging
+        ? this.taskStyles({
+            tableIndex: this.tableIndex,
+            taskIndex: this.taskIndex,
+          })
+        : "single-task";
     },
   },
   methods: {
     onDragStartHandler(event: DragEvent): void {
-      this.handleDragStart(event, { tableIndex: this.tableIndex, taskIndex: this.taskIndex });
+      this.handleDragStart(event, {
+        tableIndex: this.tableIndex,
+        taskIndex: this.taskIndex,
+      });
     },
     onDragEnterHandler(event: DragEvent): void {
       if (this.dragging) {
-        this.handleDragEnter(event, { tableIndex: this.tableIndex, taskIndex: this.taskIndex });
+        this.handleDragEnter(event, {
+          tableIndex: this.tableIndex,
+          taskIndex: this.taskIndex,
+        });
       }
     },
   },
@@ -93,7 +113,7 @@ export default defineComponent({
 
 .entered {
   background-color: #282c34;
-  box-shadow: 0px 0px 16px -2px rgba(0,0,0,0.75);
+  box-shadow: 0px 0px 16px -2px rgba(0, 0, 0, 0.75);
 }
 
 /* .entered .task-title {
