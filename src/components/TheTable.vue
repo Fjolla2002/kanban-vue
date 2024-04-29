@@ -15,7 +15,7 @@
       class="table-title"
       :style="{ backgroundColor: `${tableStyles.background}` }"
     >
-      <h2>{{ status }} [{{ tasks.length }}]</h2>
+      <h2>{{ status }} - ({{ tasks.length }})</h2>
     </div>
     <div class="table-content" ref="tableContent">
       <the-task
