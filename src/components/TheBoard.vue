@@ -1,8 +1,8 @@
 <template>
-  <div class="board-container">
+  <div class="board__container">
     <div class="container">
-      <div class="board-wrapper">
-        <div class="board-content">
+      <div class="board__wrapper">
+        <div class="board__content">
           <the-table
             v-for="(table, index) in datas"
             :key="table.id"
@@ -208,9 +208,9 @@ export default defineComponent({
         currentTask.currentTableIndex === task.tableIndex &&
         currentTask.currentTaskIndex === task.taskIndex
       ) {
-        return "entered single-task";
+        return "entered task";
       }
-      return "single-task";
+      return "task";
     },
   },
   mounted() {
@@ -224,18 +224,18 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.board-container {
+.board__container {
   background-color: #282c34;
 }
 
-.board-wrapper {
+.board__wrapper {
   padding: 5rem 0;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
-.board-content {
+.board__content {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 2rem;

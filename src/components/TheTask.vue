@@ -5,9 +5,9 @@
     @dragstart="onDragStartHandler"
     @dragenter="onDragEnterHandler"
   >
-    <div class="task-content">
-      <h5 class="task-title">{{ task.title }}</h5>
-      <p class="task-desc">{{ task.desc }}</p>
+    <div>
+      <h5 class="task__title">{{ task.title }}</h5>
+      <p class="task__desc">{{ task.desc }}</p>
     </div>
   </div>
 </template>
@@ -63,7 +63,7 @@ export default defineComponent({
             tableIndex: this.tableIndex,
             taskIndex: this.taskIndex,
           })
-        : "single-task";
+        : "task";
     },
   },
   methods: {
@@ -86,7 +86,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.single-task {
+.task {
   width: 100%;
   padding: 2rem;
   margin-bottom: 1rem;
@@ -96,16 +96,16 @@ export default defineComponent({
   transition: all 0.3s ease-in-out;
 }
 
-.single-task:last-child {
+.task:last-child {
   margin-bottom: 0;
 }
 
-.task-title {
+.task__title {
   font-size: 1.3rem;
   color: #282c34;
 }
 
-.task-desc {
+.task__desc {
   margin-top: 1rem;
   font-size: 1rem;
   color: #282c34;

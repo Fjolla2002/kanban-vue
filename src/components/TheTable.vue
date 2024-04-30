@@ -1,6 +1,6 @@
 <template>
   <div
-    class="single-table"
+    class="table"
     :style="{
       border: isDraggingOver
         ? '5px solid #49505e'
@@ -16,12 +16,12 @@
     @drop="handleDrop"
   >
     <div
-      class="table-title"
+      class="table__title"
       :style="{ backgroundColor: `${tableStyles.background}` }"
     >
       <h2>{{ status }} - ({{ tasks.length }})</h2>
     </div>
-    <div class="table-content" ref="tableContent">
+    <div class="table__content" ref="tableContent">
       <the-task
         v-for="(task, taskIndex) in tasks.slice(0, getDisplayedTasksCount())"
         :key="taskIndex"
@@ -37,7 +37,7 @@
         v-if="getDisplayedTasksCount() < tasks.length"
         @click="handleLoadMore"
         type="button"
-        class="load-more"
+        class="load__more"
       >
         Load More
       </button>
@@ -178,7 +178,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.single-table {
+.table {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -188,13 +188,13 @@ export default defineComponent({
   border: 2px solid;
 }
 
-.table-title {
+.table__title {
   padding: 1rem;
   text-align: center;
   color: #ccc;
 }
 
-.table-content {
+.table__content {
   padding: 1rem;
   background-color: #a4a5a9;
   overflow-y: scroll;
@@ -206,7 +206,7 @@ export default defineComponent({
   min-height: 40rem;
 }
 
-.table-content .load-more {
+.table__content .load__more {
   border: 1px solid transparent;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
@@ -214,7 +214,7 @@ export default defineComponent({
   transition: all 0.3s ease-in-out;
 }
 
-.load-more:hover {
+.load__more:hover {
   border: 1px solid #49505e;
   transform: scale(0.98);
 }
