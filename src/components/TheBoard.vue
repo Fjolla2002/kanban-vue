@@ -111,16 +111,16 @@ export default defineComponent({
 
       this.isDragging = true;
     },
-    handleDrag(event: DragEvent) {
-      if (!this.draggedTaskNode || !this.clonedTask || !this.draggedTask)
-        return;
-      this.clonedTask.style.top = `${
-        event.clientY - this.draggedTask.dragOffsetY
-      }px`;
-      this.clonedTask.style.left = `${
-        event.clientX - this.draggedTask.dragOffsetX
-      }px`;
-    },
+    // handleDrag(event: DragEvent) {
+    //   if (!this.draggedTaskNode || !this.clonedTask || !this.draggedTask)
+    //     return;
+    //   this.clonedTask.style.top = `${
+    //     event.clientY - this.draggedTask.dragOffsetY
+    //   }px`;
+    //   this.clonedTask.style.left = `${
+    //     event.clientX - this.draggedTask.dragOffsetX
+    //   }px`;
+    // },
     handleDragEnter(
       event: DragEvent,
       enteredTask: { tableIndex: number; taskIndex: number }
