@@ -141,7 +141,7 @@ export default defineComponent({
       const targetElement = e.target as HTMLDivElement;
       if (
         targetElement &&
-        targetElement.classList.contains("table-content") &&
+        targetElement.classList.contains("table__content") &&
         this.isDraggingOver &&
         this.dragging
       ) {

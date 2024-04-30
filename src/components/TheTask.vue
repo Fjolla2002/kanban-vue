@@ -5,10 +5,8 @@
     @dragstart="onDragStartHandler"
     @dragenter="onDragEnterHandler"
   >
-    <div>
-      <h5 class="task__title">{{ task.title }}</h5>
-      <p class="task__desc">{{ task.desc }}</p>
-    </div>
+    <h5 class="task__title">{{ task.title }}</h5>
+    <p class="task__desc">{{ task.desc }}</p>
   </div>
 </template>
 
