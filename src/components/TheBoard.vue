@@ -185,9 +185,9 @@ export default defineComponent({
       if (this.draggedTaskNode) {
         this.draggedTaskNode.removeEventListener("dragend", this.handleDragEnd);
       }
-      if (this.clonedTask) {
-        document.body.removeChild(this.clonedTask);
-      }
+      // if (this.clonedTask) {
+      //   document.body.removeChild(this.clonedTask);
+      // }
 
       (this.draggedTask = {
         currentTableIndex: 0,
