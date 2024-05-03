@@ -21,7 +21,7 @@
     >
       <h2>{{ status }} - ({{ tasks.length }})</h2>
     </div>
-    <div class="table__content" ref="tableContent">
+    <div class="table__content">
       <the-task
         v-for="(task, taskIndex) in tasks.slice(0, getDisplayedTasksCount())"
         :key="taskIndex"
@@ -128,11 +128,20 @@ export default defineComponent({
       return this.displayedTasks[this.tableIndex] || 4;
     },
     isLoadMoreVisible(): boolean {
-      const tableContent = this.$refs.tableContent as HTMLDivElement;
-      const loadMoreButton = tableContent.querySelector(
-        ".load-more"
-      ) as HTMLButtonElement;
-      return loadMoreButton !== null;
+      const tableContent = document.querySelector(
+        `.table:nth-child(${this.tableIndex + 1}) .table__content`
+      ) as HTMLDivElement;
+      if (tableContent) {
+        const loadMoreButton = tableContent.querySelector(
+          ".load__more"
+        ) as HTMLButtonElement;
+        console.log(tableContent);
+        console.log(loadMoreButton !== null);
+        
+        
+        return loadMoreButton !== null;
+      }
+      return false;
     },
     handleDragOver(e: DragEvent): void {
       e.preventDefault();
