@@ -135,9 +135,6 @@ export default defineComponent({
         const loadMoreButton = tableContent.querySelector(
           ".load__more"
         ) as HTMLButtonElement;
-        console.log(tableContent);
-        console.log(loadMoreButton !== null);
-        
         
         return loadMoreButton !== null;
       }
